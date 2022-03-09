@@ -1,12 +1,12 @@
 _BASE_: [
-  '../datasets/coco_detection.yml',
+  '../datasets/voc.yml',
   '../runtime.yml',
   '_base_/sparse_rcnn_r50_fpn.yml',
-  '_base_/optimizer_3x.yml',
+  '_base_/optimizer_1x.yml',
   '_base_/sparse_rcnn_reader.yml',
 ]
 
-num_classes: 80
+num_classes: 2
 weights: output/sparse_rcnn_r50_fpn_3x_pro300_coco/model_final
 
 snapshot_epoch: 1

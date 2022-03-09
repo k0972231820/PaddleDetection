@@ -39,6 +39,6 @@ BBoxPostProcess:
     name: MultiClassNMS
     keep_top_k: 200
     score_threshold: 0.01
-    nms_threshold: 0.45
+    nms_threshold: 0.1
     nms_top_k: 400
     nms_eta: 1.0

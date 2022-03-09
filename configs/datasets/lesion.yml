@@ -1,6 +1,6 @@
 metric: VOC
-map_type: 11point
-num_classes: 2
+map_type: integral
+num_classes: 3
 
 TrainDataset:
   !VOCDataSet

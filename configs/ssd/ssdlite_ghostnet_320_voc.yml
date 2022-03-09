@@ -1,0 +1,27 @@
+_BASE_: [
+  '../datasets/voc.yml',
+  '../runtime.yml',
+  '_base_/optimizer_240e.yml',
+  '_base_/ssdlite_ghostnet_320.yml',
+  '_base_/ssdlite320_reader.yml',
+]
+weights: output/ssdlite_ghostnet_320_voc/model_final
+
+epoch: 240
+
+LearningRate:
+  base_lr: 0.0005
+  schedulers:
+  - !CosineDecay
+    max_epochs: 240
+  - !LinearWarmup
+    start_factor: 0.33333
+    steps: 20
+
+OptimizerBuilder:
+  optimizer:
+    momentum: 0.9
+    type: Momentum
+  regularizer:
+    factor: 0.0005
+    type: L2

@@ -111,4 +111,4 @@ OptimizerBuilder:
 
 _READER_: '../faster_fpn_reader.yml'
 TrainReader:
-  batch_size: 2
+  batch_size: 1

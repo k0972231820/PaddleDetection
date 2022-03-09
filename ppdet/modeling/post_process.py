@@ -46,7 +46,7 @@ class BBoxPostProcess(nn.Layer):
             np.array(
                 [[-1, 0.0, 0.0, 0.0, 0.0, 0.0]], dtype='float32'))
         self.fake_bbox_num = paddle.to_tensor(np.array([1], dtype='int32'))
-
+    
     def forward(self, head_out, rois, im_shape, scale_factor):
         """
         Decode the bbox and do NMS if needed. 
@@ -90,7 +90,7 @@ class BBoxPostProcess(nn.Layer):
             pred_result (Tensor): The final prediction results with shape [N, 6]
                 including labels, scores and bboxes.
         """
-
+        
         if bboxes.shape[0] == 0:
             bboxes = self.fake_bboxes
             bbox_num = self.fake_bbox_num
@@ -130,13 +130,57 @@ class BBoxPostProcess(nn.Layer):
         # filter empty bbox
         keep_mask = nonempty_bbox(pred_bbox, return_mask=True)
         keep_mask = paddle.unsqueeze(keep_mask, [1])
+        
         pred_label = paddle.where(keep_mask, pred_label,
                                   paddle.ones_like(pred_label) * -1)
         pred_result = paddle.concat([pred_label, pred_score, pred_bbox], axis=1)
+        # self.remove_overlap(pred_result)
         return pred_result
 
     def get_origin_shape(self, ):
         return self.origin_shape_list
+    
+    # Ken
+    def box_iou_calc(self, box1, box2):
+        iou = -1
+        bb = box2
+        bbgt = box1
+        bi = [max(bb[0],bbgt[0]), max(bb[1],bbgt[1]), min(bb[2],bbgt[2]), min(bb[3],bbgt[3])]
+        iw = bi[2] - bi[0] + 1
+        ih = bi[3] - bi[1] + 1
+        if iw > 0 and ih > 0:
+            # compute overlap (IoU) = area of intersection / area of union
+            ua = (bb[2] - bb[0] + 1) * (bb[3] - bb[1] + 1) + (bbgt[2] - bbgt[0]
+                            + 1) * (bbgt[3] - bbgt[1] + 1) - iw * ih
+            iou = iw * ih / ua
+        
+        return iou, iw * ih
+    
+    def remove_overlap(self, result):
+        for i in range(np.size(result, 0)):
+            for j in range(i+1, np.size(result, 0)):
+                box1 = result[i, 2:6]
+                box2 = result[j, 2:6]
+                iou, inter = self.box_iou_calc(box1, box2)
+                # if iou > 0.5:
+                ov1 = inter / ((box1[2] - box1[0]) * (box1[3] - box1[1]))
+                ov2 = inter / ((box2[2] - box2[0]) * (box2[3] - box2[1]))
+                if ov1 > 0.7 or ov2 > 0.7:
+                    # if result[i, 0] == 1 and (result[j, 0] == 0 and result[j, 1] > 0.3):
+                        # print(result[j, :])
+                        # result[i, 1] *= 1.2
+                    # if result[j, 0] == 1 and (result[i, 0] == 0 and result[i, 1] > 0.3):
+                        # print(result[i, :])
+                        # result[j, 1] *= 1.2
+                    # if result[j, 0] == 1:
+                        # result[i, 1] -= 0.1
+                            
+                    if result[i, 1] > result[j, 1]:
+                        result[j, 1] = 0.001
+                    else:
+                        result[i, 1] = 0.001
+                    
+    # Ken
 
 
 @register

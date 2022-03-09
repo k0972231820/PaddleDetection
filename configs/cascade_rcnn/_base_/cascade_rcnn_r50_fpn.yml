@@ -72,4 +72,4 @@ BBoxPostProcess:
     name: MultiClassNMS
     keep_top_k: 100
     score_threshold: 0.05
-    nms_threshold: 0.5
+    nms_threshold: 0.3

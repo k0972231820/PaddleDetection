@@ -1,5 +1,5 @@
 _BASE_: [
-  '../datasets/coco_detection.yml',
+  '../datasets/voc.yml',
   '../runtime.yml',
   '_base_/optimizer_swin_1x.yml',
   '_base_/faster_rcnn_swin_tiny_fpn.yml',

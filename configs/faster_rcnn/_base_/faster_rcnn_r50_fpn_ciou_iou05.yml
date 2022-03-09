@@ -1,5 +1,5 @@
 architecture: FasterRCNN
-pretrain_weights: https://paddledet.bj.bcebos.com/models/pretrained/ResNet50_cos_pretrained.pdparams
+#pretrain_weights: https://paddledet.bj.bcebos.com/models/pretrained/ResNet50_cos_pretrained.pdparams
 
 FasterRCNN:
   backbone: ResNet
@@ -23,14 +23,14 @@ FPN:
 
 RPNHead:
   anchor_generator:
-    aspect_ratios: [0.3, 0.5, 1.0, 2.0, 3.0]
-    anchor_sizes: [[32], [64], [128], [200]]
+    aspect_ratios: [0.3, 0.5, 1, 2, 3]
+    anchor_sizes: [[32], [64], [128], [256]]
     strides: [4, 8, 16, 32, 64]
   rpn_target_assign:
     batch_size_per_im: 256
     fg_fraction: 0.5
-    negative_overlap: 0.3
-    positive_overlap: 0.7
+    negative_overlap: 0.5
+    positive_overlap: 0.5
     use_random: True
   train_proposal:
     min_size: 0.0
@@ -52,6 +52,7 @@ BBoxHead:
     sampling_ratio: 0
     aligned: True
   bbox_assigner: BBoxAssigner
+  bbox_loss: DIouLoss
 
 BBoxAssigner:
   batch_size_per_im: 512
@@ -63,6 +64,9 @@ BBoxAssigner:
 TwoFCHead:
   out_channel: 1024
 
+DIouLoss:
+  loss_weight: 10.0
+  use_complete_iou_loss: true
 
 BBoxPostProcess:
   decode: RCNNBox

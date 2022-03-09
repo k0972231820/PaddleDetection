@@ -85,7 +85,23 @@ def policy_vtest():
     # Each tuple is an augmentation operation of the form
     # (operation, probability, magnitude). Each element in policy is a
     # sub-policy that will be applied sequentially on the image.
-    policy = [[('TranslateX_BBox', 1.0, 4), ('Equalize', 1.0, 10)], ]
+    policy = [
+        [('TranslateX_BBox', 0.6, 4), ('Equalize', 0.8, 6)],
+        [('Sharpness', 0.0, 8), ('ShearX_BBox', 0.4, 0)],
+        [('ShearY_BBox', 1.0, 2), ('TranslateY_Only_BBoxes', 0.0, 6)],
+        [('Rotate_BBox', 0.6, 10), ('Color', 1.0, 4)],
+        [('Color', 0.0, 0), ('ShearX_Only_BBoxes', 0.8, 4)],
+        [('Equalize', 0.6, 6), ('TranslateX_BBox', 0.2, 2)],
+        [('Color', 1.0, 4), ('TranslateY_Only_BBoxes', 0.0, 6)],
+        [('Rotate_BBox', 0.8, 10), ('Contrast', 0.0, 10)],  # , 
+        [('Color', 1.0, 6), ('Equalize', 1.0, 2)],
+        [('Color', 0.2, 4), ('Rotate_BBox', 0.8, 10)],
+        [('Sharpness', 0.4, 4), ('TranslateY_Only_BBoxes', 0.0, 4)],
+        [('Rotate_BBox', 1.0, 8), ('Sharpness', 0.2, 8)],
+        [('ShearX_BBox', 0.2, 6), ('TranslateY_Only_BBoxes', 0.0, 10)],
+        [('AutoContrast', 0.4, 6), ('ShearX_BBox', 0.2, 8),
+         ('Brightness', 0.0, 6)],
+    ]
     return policy
 
 
